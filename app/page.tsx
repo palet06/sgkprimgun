@@ -17,7 +17,7 @@ export default function SgkQueryPage() {
   const [results, setResults] = useState<QueryResult[]>([])
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [isRunning, setIsRunning] = useState(false)
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+  const [selectedYear, setSelectedYear] = useState(2025)
   const abortControllerRef = useRef<AbortController | null>(null)
 
   // TC Kimlik numaralarını parse et
@@ -179,23 +179,26 @@ export default function SgkQueryPage() {
   }
 
   const exportToExcel = () => {
-    const successResults = results.filter((r) => r.status === "success")
-    if (successResults.length === 0) return
+    if (results.length === 0) return
 
     const months = Array.from({ length: 12 }, (_, i) => i + 1)
 
-    // CSV header
+    // CSV header - Durum sutunu eklendi
     const headers = [
       "Kimlik Numarası",
+      "Durum",
       ...months.map((m) => `Prim Yatan Gün Sayısı (${selectedYear}/${m})`),
       "İş yeri unvanı",
+      "Hata Mesajı",
     ]
 
-    // CSV rows
-    const rows = successResults.map((result) => [
+    // CSV rows - tum sonuclari dahil et
+    const rows = results.map((result) => [
       result.tcKimlikNo,
-      ...months.map((m) => result.aylikGunler[`${selectedYear}/${m}`] || 0),
+      result.status === "error" ? "HATA" : "BASARILI",
+      ...months.map((m) => result.status === "error" ? "HATA" : (result.aylikGunler[`${selectedYear}/${m}`] || 0)),
       result.isYeriUnvani || "",
+      result.errorMessage || "",
     ])
 
     // Create CSV content
