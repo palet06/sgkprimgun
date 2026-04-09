@@ -26,8 +26,9 @@ export default function SgkQueryPage() {
       .split(/[\n,;|\s]+/)
       .map((n) => n.trim())
       .filter((n) => /^\d{9,11}$/.test(n))
-    return [...new Set(numbers)] // Tekrarları kaldır
-  }, [])
+    // return [...new Set(numbers)] // Tekrarları kaldır
+    return numbers
+   }, [])
 
   const validKimlikler = parseKimlikNumaralari(kimlikNumaralari)
 
@@ -281,11 +282,11 @@ export default function SgkQueryPage() {
           </div>
         </div>
 
-        {/* Results Table */}
-        <ResultsTable results={results} year={selectedYear} />
+        {/* Results Table 
+        <ResultsTable results={results} year={selectedYear} />*/}
 
-        {/* Logs */}
-        <LogsPanel logs={logs} />
+        {/* Logs 
+        <LogsPanel logs={logs} />*/}
       </div>
     </main>
   )
